@@ -249,6 +249,22 @@
       });
     });
 
+    const themeToggle = document.getElementById("theme-toggle");
+    if (themeToggle) {
+      themeToggle.addEventListener("click", function () {
+        const root = document.documentElement;
+        const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        if (next === "dark") {
+          root.setAttribute("data-theme", "dark");
+        } else {
+          root.removeAttribute("data-theme");
+        }
+        try {
+          localStorage.setItem("math-solver-theme", next);
+        } catch (e) {}
+      });
+    }
+
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       errorBox.hidden = true;
