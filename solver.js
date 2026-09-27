@@ -10,9 +10,6 @@
         i++;
         continue;
       }
-      if (c === "/") {
-        throw new Error("Division isn't supported yet — remove the / from your input.");
-      }
       if (/[0-9.]/.test(c)) {
         let j = i;
         while (j < src.length && /[0-9.]/.test(src[j])) j++;
@@ -31,7 +28,7 @@
         i++;
         continue;
       }
-      if ("+-*^()".indexOf(c) !== -1) {
+      if ("+-*/^()".indexOf(c) !== -1) {
         tokens.push({ type: c });
         i++;
         continue;
@@ -75,6 +72,8 @@
       for (;;) {
         if (eat("*")) {
           node = { kind: "*", left: node, right: parseUnary() };
+        } else if (eat("/")) {
+          node = { kind: "/", left: node, right: parseUnary() };
         } else if (startsOperand()) {
           node = { kind: "*", left: node, right: parseUnary() };
         } else {
@@ -141,6 +140,11 @@
         return evalTree(node.left, x) - evalTree(node.right, x);
       case "*":
         return evalTree(node.left, x) * evalTree(node.right, x);
+      case "/": {
+        const denom = evalTree(node.right, x);
+        if (Math.abs(denom) < 1e-12) throw new Error("Division by zero.");
+        return evalTree(node.left, x) / denom;
+      }
       case "^":
         return Math.pow(evalTree(node.base, x), evalTree(node.exponent, x));
       default:
@@ -166,7 +170,11 @@
   }
 
   function solve(input) {
-    const src = String(input).replace(/−/g, "-").replace(/×/g, "*").trim();
+    const src = String(input)
+      .replace(/−/g, "-")
+      .replace(/×/g, "*")
+      .replace(/÷/g, "/")
+      .trim();
     if (!src) throw new Error("Type an equation first, e.g. 2x + 3 = 7.");
     if (src.indexOf("=") === -1) {
       const hasVar = tokenize(src).some(function (t) {
@@ -232,6 +240,7 @@
     const resultBox = document.getElementById("result");
     const solutionBox = resultBox.querySelector(".solution");
     const stepsList = resultBox.querySelector(".steps");
+    const themeToggle = document.getElementById("theme-toggle");
 
     function insertAtCursor(text) {
       const start = input.selectionStart || 0;
@@ -248,6 +257,21 @@
         insertAtCursor(btn.getAttribute("data-insert"));
       });
     });
+
+    if (themeToggle) {
+      themeToggle.addEventListener("click", function () {
+        const root = document.documentElement;
+        const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        if (next === "dark") {
+          root.setAttribute("data-theme", "dark");
+        } else {
+          root.removeAttribute("data-theme");
+        }
+        try {
+          localStorage.setItem("math-solver-theme", next);
+        } catch (e) {}
+      });
+    }
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();
