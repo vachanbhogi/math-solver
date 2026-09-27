@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Math Solver — Linear Equations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="header">
+      <p class="brand">Math Solver</p>
+      <h1>Linear equations in <em>x</em></h1>
+      <p class="sub">Supports <strong>+ − ×</strong>, powers, and parentheses. Division is not supported yet.</p>
+    </header>
+
+    <form id="solver-form" autocomplete="off">
+      <label class="field-label" for="equation">Equation</label>
+      <div class="input-row">
+        <input id="equation" type="text" placeholder="e.g. 2(x + 3) = 4x − 2" autofocus>
+        <button type="submit" class="solve-btn">Solve</button>
+      </div>
+      <div class="keypad" aria-label="Insert operator">
+        <button type="button" class="key" data-insert="+">+</button>
+        <button type="button" class="key" data-insert="-">−</button>
+        <button type="button" class="key" data-insert="*">×</button>
+        <button type="button" class="key" data-insert="^">^</button>
+        <button type="button" class="key" data-insert="(">(</button>
+        <button type="button" class="key" data-insert=")">)</button>
+        <button type="button" class="key" data-insert="x">x</button>
+        <button type="button" class="key" data-insert="=">=</button>
+      </div>
+    </form>
+
+    <div id="error" class="error" hidden></div>
+
+    <div id="result" class="result" hidden>
+      <div class="solution"></div>
+      <ol class="steps"></ol>
+    </div>
+  </main>
+
+  <script src="solver.js"></script>
+</body>
+</html>
